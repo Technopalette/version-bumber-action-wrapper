@@ -1,30 +1,58 @@
 name: 'Automatic Version Bumper Wrapper'
-description: 'Public wrapper for the Automatic Version Bumper core'
-
+description: 'Public wrapper for the Automatic Version Bumper core action'
+author: 'Technopalette'
+branding:
+  icon: 'tag'
+  color: 'blue'
 inputs:
   token:
-    description: 'GitHub token for creating releases'
+    description: 'GitHub token for creating releases and pushing tags'
     required: true
   initial_version:
-    description: 'Initial version from secrets'
+    description: 'Initial version from secrets (format: x.y.z)'
     required: true
   force_initial:
-    description: 'Force use of initial version'
+    description: 'Force use of initial version (ignore existing tags)'
     required: false
     default: 'false'
-
 outputs:
   new_version:
-    description: 'The new version number'
+    description: 'The new version number that was created'
     value: ${{ steps.run-core.outputs.new_version }}
-
 runs:
   using: 'composite'
   steps:
+    - name: Validate inputs
+      shell: bash
+      run: |
+        echo "Validating inputs..."
+        echo "Initial version: ${{ inputs.initial_version }}"
+        echo "Force initial: ${{ inputs.force_initial }}"
+        
+        # Validate version format
+        if [[ ! "${{ inputs.initial_version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          echo "Error: initial_version must be in format x.y.z (e.g., 1.0.0)"
+          exit 1
+        fi
+        
+    - name: Checkout private core action
+      uses: actions/checkout@v4
+      with:
+        repository: Technopalette/version-bumber-action-core
+        token: ${{ secrets.DEVOPS_PAT }}
+        path: ./core-action
+        ref: v1
+        
     - name: Run Core Action
       id: run-core
-      uses: Technopalette/version-bumber-action-core@v1
+      uses: ./core-action
       with:
         token: ${{ inputs.token }}
         initial_version: ${{ inputs.initial_version }}
         force_initial: ${{ inputs.force_initial }}
+        
+    - name: Output results
+      shell: bash
+      run: |
+        echo "Version bumping completed!"
+        echo "New version: ${{ steps.run-core.outputs.new_version }}"
