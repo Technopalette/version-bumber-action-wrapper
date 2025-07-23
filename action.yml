@@ -15,6 +15,9 @@ inputs:
     description: 'Force use of initial version (ignore existing tags)'
     required: false
     default: 'false'
+  core_access_token:
+    description: 'Token for accessing private core action'
+    required: true
 outputs:
   new_version:
     description: 'The new version number that was created'
@@ -39,7 +42,7 @@ runs:
       uses: actions/checkout@v4
       with:
         repository: Technopalette/version-bumber-action-core
-        token: ${{ secrets.DEVOPS_PAT }}
+        token: ${{ inputs.core_access_token }}
         path: ./core-action
         ref: v1
         
