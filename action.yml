@@ -1,0 +1,30 @@
+name: 'Automatic Version Bumper Wrapper'
+description: 'Public wrapper for the Automatic Version Bumper core'
+
+inputs:
+  token:
+    description: 'GitHub token for creating releases'
+    required: true
+  initial_version:
+    description: 'Initial version from secrets'
+    required: true
+  force_initial:
+    description: 'Force use of initial version'
+    required: false
+    default: 'false'
+
+outputs:
+  new_version:
+    description: 'The new version number'
+    value: ${{ steps.run-core.outputs.new_version }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run Core Action
+      id: run-core
+      uses: Technopalette/version-bumber-action-core@v1
+      with:
+        token: ${{ inputs.token }}
+        initial_version: ${{ inputs.initial_version }}
+        force_initial: ${{ inputs.force_initial }}
