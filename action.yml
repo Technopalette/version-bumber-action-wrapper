@@ -20,42 +20,9 @@ inputs:
 outputs:
   new_version:
     description: 'The new version number that was created'
-    value: ${{ steps.run-core.outputs.new_version }}
 
 runs:
-  using: 'composite'
-  steps:
-    - name: Validate inputs
-      shell: bash
-      run: |
-        echo "Validating inputs..."
-        echo "Initial version: ${{ inputs.initial_version }}"
-        echo "Force initial: ${{ inputs.force_initial }}"
-        
-        # Validate version format
-        if [[ ! "${{ inputs.initial_version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-          echo "Error: initial_version must be in format x.y.z (e.g., 1.0.0)"
-          exit 1
-        fi
-        
-    - name: Checkout private core action
-      uses: actions/checkout@v4
-      with:
-        repository: Technopalette/version-bumber-action-core-private
-        token: ${{ secrets.CORE_ACCESS_TOKEN }}
-        path: ./core-action
-        ref: main
-        
-    - name: Run Core Action
-      id: run-core
-      uses: ./core-action
-      with:
-        token: ${{ inputs.token }}
-        initial_version: ${{ inputs.initial_version }}
-        force_initial: ${{ inputs.force_initial }}
-        
-    - name: Output results
-      shell: bash
-      run: |
-        echo "Version bumping completed!"
-        echo "New version: ${{ steps.run-core.outputs.new_version }}"
+  using: 'node20'
+  main: 'index.js'
+  env:
+    CORE_ACCESS_TOKEN: ${{ secrets.CORE_ACCESS_TOKEN }}

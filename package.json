@@ -1,0 +1,32 @@
+{
+  "name": "version-bumper-action-wrapper",
+  "version": "2.0.0",
+  "description": "Secure wrapper for automatic version bumper with private core logic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "@actions/exec": "^1.1.1"
+  },
+  "keywords": [
+    "github",
+    "actions",
+    "version",
+    "bump",
+    "semver",
+    "conventional-commits"
+  ],
+  "author": "Technopalette",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Technopalette/version-bumber-action-wrapper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Technopalette/version-bumber-action-wrapper/issues"
+  },
+  "homepage": "https://github.com/Technopalette/version-bumber-action-wrapper#readme"
+}
