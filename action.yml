@@ -1,9 +1,10 @@
-name: 'Automatic Version Bumper Wrapper'
-description: 'Public wrapper for the Automatic Version Bumper core action'
+name: 'Automatic Version Bumper'
+description: 'Automatically bumps version and creates releases based on PR title conventions'
 author: 'Technopalette'
 branding:
   icon: 'tag'
   color: 'blue'
+
 inputs:
   token:
     description: 'GitHub token for creating releases and pushing tags'
@@ -15,13 +16,12 @@ inputs:
     description: 'Force use of initial version (ignore existing tags)'
     required: false
     default: 'false'
-  core_access_token:
-    description: 'Token for accessing private core action'
-    required: true
+
 outputs:
   new_version:
     description: 'The new version number that was created'
     value: ${{ steps.run-core.outputs.new_version }}
+
 runs:
   using: 'composite'
   steps:
@@ -41,10 +41,10 @@ runs:
     - name: Checkout private core action
       uses: actions/checkout@v4
       with:
-        repository: Technopalette/version-bumber-action-core
-        token: ${{ inputs.core_access_token }}
+        repository: Technopalette/version-bumber-action-core-private
+        token: ${{ secrets.CORE_ACCESS_TOKEN }}
         path: ./core-action
-        ref: v1
+        ref: main
         
     - name: Run Core Action
       id: run-core
